@@ -12,8 +12,10 @@ from telegram.ext import (
     filters,
 )
 
-# ==== ВСТАВЬ СВОЙ ТОКЕН ====
-BOT_TOKEN = "8309572422:AAHqWM0LomhwfPNKTZ1-Qjy7jaGBu2h7GC4"
+import os
+
+# ==== Берём токен из Railway (переменная окружения) ====
+BOT_TOKEN = os.environ["BOT_TOKEN"]
 # ============================
 
 IMAGES_DIR = Path(__file__).parent / "images"
@@ -145,4 +147,5 @@ async def main():
 if __name__ == "__main__":
 
     asyncio.run(main())
+
 
