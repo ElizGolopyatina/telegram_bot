@@ -1,4 +1,5 @@
 import asyncio
+import os
 import random
 from pathlib import Path
 
@@ -12,7 +13,7 @@ from telegram.ext import (
     filters,
 )
 
-import os
+
 
 # ==== Берём токен из Railway (переменная окружения) ====
 BOT_TOKEN = os.environ["BOT_TOKEN"]
@@ -147,5 +148,6 @@ async def main():
 if __name__ == "__main__":
 
     asyncio.run(main())
+
 
 
