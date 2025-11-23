@@ -38,6 +38,7 @@ def prediction_keyboard() -> ReplyKeyboardMarkup:
 
 async def send_prediction(chat_id: int, context: ContextTypes.DEFAULT_TYPE):
     img_path = get_random_image_path()
+    print("Пытаюсь отправить:", img_path)
     with open(img_path, "rb") as f:
         await context.bot.send_photo(
             chat_id=chat_id,
@@ -114,4 +115,5 @@ async def main():
 
 
 if __name__ == "__main__":
+
     asyncio.run(main())
