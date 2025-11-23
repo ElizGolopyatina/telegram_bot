@@ -37,14 +37,42 @@ def prediction_keyboard() -> ReplyKeyboardMarkup:
 
 
 async def send_prediction(chat_id: int, context: ContextTypes.DEFAULT_TYPE):
-    img_path = get_random_image_path()
-    print("Пытаюсь отправить:", img_path)
-    with open(img_path, "rb") as f:
-        await context.bot.send_photo(
-            chat_id=chat_id,
-            photo=f,
-            has_spoiler=True,  # 👈 вот это добавили
-        )
+    files = list(IMAGES_DIR.iterdir())
+
+    # оставляем только допустимые картинки
+    allowed_ext = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+    files = [f for f in files if f.suffix.lower() in allowed_ext]
+
+    print("Файлы в images:", [f.name for f in files])
+
+    if not files:
+        await context.bot.send_message(chat_id, "Нет доступных картинок 🙈")
+        return
+
+    # перемешиваем, чтобы выбор был случайным
+    random.shuffle(files)
+
+    # пробуем отправлять по одной, пока не найдём рабочую
+    for img_path in files:
+        print("Пробую отправить:", img_path.name)
+        try:
+            with open(img_path, "rb") as f:
+                await context.bot.send_photo(
+                    chat_id=chat_id,
+                    photo=f,
+                    has_spoiler=True,
+                )
+            print("Успешно отправлена:", img_path.name)
+            return  # успех — выходим
+        except Exception as e:
+            print(f"Ошибка при отправке {img_path.name}: {e}")
+
+    # если ни одна картинка не отправилась
+    await context.bot.send_message(
+        chat_id,
+        "😢 Не удалось отправить ни одну картинку. Возможно, файлы повреждены.",
+        reply_markup=prediction_keyboard()
+    )
 
 
 # --- /start ---
@@ -117,3 +145,4 @@ async def main():
 if __name__ == "__main__":
 
     asyncio.run(main())
+
